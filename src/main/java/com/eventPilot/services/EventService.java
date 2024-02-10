@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class EventService {
@@ -161,7 +164,7 @@ public class EventService {
         return new ArrayList<>(ids);
     }
 
-    public ResponseEntity<List<ResponseEmptySlots>> getUpcomingEmptySlot(SchedulingRequest schedulingRequest) {
+    public ResponseEntity<List<TimeSlot>> getUpcomingEmptySlot(SchedulingRequest schedulingRequest) {
         Optional<List<Reference>> userReferenceList = Optional.ofNullable(schedulingRequest.getUsers());
 
         if (userReferenceList.isPresent() && !userReferenceList.get().isEmpty() && schedulingRequest.getDuration() > 0 && schedulingRequest.getLocalDate() != null) {
@@ -170,17 +173,90 @@ public class EventService {
 
             if (userList.isPresent() && !userList.get().isEmpty()) {
                 String localDate = schedulingRequest.getLocalDate().toString();
-                List<String> eventIds = userList.get().stream()
-                        .filter(user -> user.getEventsByDate() != null && user.getEventsByDate().containsKey(localDate))
-                        .flatMap(user -> user.getEventsByDate().getOrDefault(localDate, Collections.emptyList()).stream())
-                        .map(Reference::get_id)
-                        .collect(Collectors.toList());
+                List<String> eventIds = getEventIdsFromUserList(userList, localDate);
 
                 if (eventIds != null) {
                     Optional<List<Event>> eventList = Optional.ofNullable(genericsCollectionHandler.findByFields(Event.class, "_id", eventIds));
 
+                    if (eventList.isPresent()) {
+                        List<Meeting> meetingList = eventList.get().stream()
+                                .map(event -> new Meeting(event.getStartTime(), event.getEndTime()))
+                                .collect(Collectors.toList());
+
+                        List<TimeSlot> freeTimeSlots = calculateFreeTime(meetingList, schedulingRequest.getDuration());
+                        return new ResponseEntity<>(freeTimeSlots, HttpStatus.OK);
+                    }
                 }
             }
         }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+    }
+
+    private static List<String> getEventIdsFromUserList(Optional<List<User>> userList, String localDate) {
+        return userList.get().stream()
+                .filter(user -> user.getEventsByDate() != null && user.getEventsByDate().containsKey(localDate))
+                .flatMap(user -> user.getEventsByDate().getOrDefault(localDate, Collections.emptyList()).stream())
+                .map(Reference::get_id)
+                .collect(Collectors.toList());
+    }
+
+    private static List<TimeSlot> calculateFreeTime(List<Meeting> meetings, int requiredDurationInHours) {
+        Duration requiredDuration = Duration.ofHours(requiredDurationInHours);
+        List<TimeSlot> freeTimeSlots = new ArrayList<>();
+        meetings.sort(Comparator.comparing(Meeting::getStart));
+        LocalDateTime previousEnd = LocalDateTime.parse("2024-02-10T00:00:00");
+
+        for (Meeting meetup : meetings) {
+            LocalDateTime currentStart = meetup.getStart();
+
+            if (currentStart.isAfter(previousEnd)) {
+                Duration gapDuration = Duration.between(previousEnd, currentStart);
+
+                if (gapDuration.compareTo(requiredDuration) >= 0) {
+                    freeTimeSlots.add(new TimeSlot(previousEnd, previousEnd.plus(gapDuration)));
+                }
+            }
+            previousEnd = meetup.getEnd();
+        }
+        LocalDateTime endOfDay = LocalDateTime.parse("2024-02-10T23:59:59");
+
+        if (endOfDay.isAfter(previousEnd)) {
+            Duration remainingDuration = Duration.between(previousEnd, endOfDay);
+
+            if (remainingDuration.compareTo(requiredDuration) >= 0) {
+                freeTimeSlots.add(new TimeSlot(previousEnd, previousEnd.plus(remainingDuration)));
+            }
+        }
+        return freeTimeSlots;
+    }
+
+    public ResponseEntity<Event> createEventWithOtherUsers(Event event) {
+        Event eventObject = null;
+        List<String> userIds = Stream.concat(Stream.of(event.getOrganizerReference().get_id()),
+                        event.getParticipants().stream().map(Reference::get_id)).collect(Collectors.toList());
+
+        Optional<List<User>> optionalUserList = Optional.ofNullable(genericsCollectionHandler.findByFields(User.class, "_id", userIds));
+
+        if (optionalUserList.isPresent() && !optionalUserList.get().isEmpty()) {
+            optionalUserList.get().stream().forEach(currentUser -> {
+
+                if (currentUser.getEventsByDate() == null) currentUser.setEventsByDate(new HashMap<>());
+                Map<String, List<Reference>> usersBusySchedule = currentUser.getEventsByDate();
+                DateTimeComponent dateTimeComponent = commonUtils.separateDateAndTime(event.getStartTime());
+                String date = dateTimeComponent.getDate().toString();
+
+                if (!usersBusySchedule.containsKey(date)) {
+                    usersBusySchedule.put(date, Arrays.asList(commonUtils.getReferenceFromObject(event.get_id(), event.getTitle())));
+                } else {
+                    usersBusySchedule.get(date).add(commonUtils.getReferenceFromObject(event.get_id(), event.getTitle()));
+                }
+
+                genericsCollectionHandler.insertData(currentUser);
+            });
+
+            eventObject = genericsCollectionHandler.insertData(event);
+        }
+
+        return new ResponseEntity<>(eventObject, HttpStatus.OK);
     }
 }

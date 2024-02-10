@@ -1,9 +1,6 @@
 package com.eventPilot.controllers;
 
-import com.eventPilot.models.Event;
-import com.eventPilot.models.ResponseEmptySlots;
-import com.eventPilot.models.SchedulingRequest;
-import com.eventPilot.models.UserDateInfo;
+import com.eventPilot.models.*;
 import com.eventPilot.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +30,12 @@ public class EventController {
     }
 
     @GetMapping("/getUpcomingEmptySlot")
-    public ResponseEntity<List<ResponseEmptySlots>> getUpcomingEmptySlot (@RequestBody SchedulingRequest schedulingRequest) {
+    public ResponseEntity<List<TimeSlot>> getUpcomingEmptySlot (@RequestBody SchedulingRequest schedulingRequest) {
         return eventService.getUpcomingEmptySlot(schedulingRequest);
+    }
+
+    @PostMapping("/createEventWithOtherUsers")
+    public ResponseEntity<Event> createEventWithOtherUsers (@RequestBody Event event) {
+        return eventService.createEventWithOtherUsers(event);
     }
 }
