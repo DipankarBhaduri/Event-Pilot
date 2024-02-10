@@ -1,0 +1,9 @@
+application:
+  version: 1.0.0
+
+spring:
+  data:
+    mongodb:
+      uri: "mongodb+srv://dipankarbhaduri8:dipankarbhaduri8@cluster0.tnvgzpi.mongodb.net/event-pilot?retryWrites=true&w=majority"
+      connection-pool-size: 10
+      socket-timeout: 2000
