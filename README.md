@@ -1,8 +1,7 @@
-Efficient Calendar Event Scheduling Prototype
-This project serves as a prototype for a web application designed to streamline the scheduling of calendar events. Developed using Java, Spring Boot, and MongoDB, 
-our aim is to provide users with essential functionalities for efficient schedule management. Please adhere to the guidelines below for successful setup and utilization of the application.
+Efficient Calendar Event Scheduling Prototype 📅
+This repository houses a prototype for a web application designed to streamline calendar event scheduling. Developed using Java, Spring Boot, and MongoDB, our objective is to provide users with essential functionalities for efficient schedule management. Below, you'll find instructions for setting up the application, an overview of its functionalities, and considerations for further development.
 
-Functionalities
+Functionalities 🚀
 User Busy Slots:
 
 Users can effortlessly create busy slots for themselves throughout the day.
@@ -18,21 +17,21 @@ Organizers can intelligently find the most favorable upcoming empty slot for a g
 Event Creation:
 
 Users can easily create events with other users for a defined start time and end time.
-Bonus Extensions
+Bonus Extensions 🌟
 Recurring Events:
 Organizers have the flexibility to create recurring events for a specific number of times, maintaining consistent start and end times with the same set of users.
-Technology Stack
+Technology Stack 🛠️
 Java: The primary backend programming language, chosen for its versatility and reliability.
 Spring Boot: Selected for its simplicity and efficiency in developing robust applications.
 MongoDB: Employed as the NoSQL database to store and manage calendar events.
-How to Run the Service
+How to Run the Service ⚙️
 Clone the repository: git clone [repository_url]
 Navigate to the project directory: cd calendar-event-scheduler
 Build the project: ./mvnw clean install
 Run the application: ./mvnw spring-boot:run
 The application will initiate, and you can access the APIs to leverage the specified functionalities.
 
-Event Controller
+Event Controller 📝
 1. Create Busy Schedule Event
 Endpoint: /rest/api/createBusySchedule
 Method: POST
@@ -58,7 +57,7 @@ Endpoint: /rest/api/createEventWithOtherUsers
 Method: POST
 Request Body: Event object representing an event involving other users
 Response: ResponseEntity<Event> - Created event details with HTTP status
-User Controller
+User Controller 👥
 1. Get All Users
 Endpoint: /rest/api/users
 Method: GET
@@ -81,12 +80,15 @@ Response: ResponseEntity<User> - Updated user details with HTTP status
 Endpoint: /rest/api/{_id}
 Method: DELETE
 Response: ResponseEntity<DeleteResult> - Deletion result with HTTP status
-README Considerations
-Reasoning Behind Technical Choices
+README Considerations 📌
+Reasoning Behind Technical Choices 🤔
 Java, Spring Boot, and MongoDB were carefully selected for their reliability, ease of use, and suitability for rapid application development.
 
-Trade-offs
+Trade-offs 🔄
 Certain trade-offs may exist due to time constraints, potentially leading to limitations in functionality. Future iterations could address these.
 
-Additional Work
+Additional Work 🚧
 Given more time, the focus should be on enhancing API validation, improving error handling, and incorporating advanced features.
+
+Author 🖋️
+Dipankar Bhaduri
