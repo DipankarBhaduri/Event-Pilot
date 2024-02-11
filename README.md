@@ -37,22 +37,24 @@ Endpoint: /rest/api/createBusySchedule
 Method: POST
 Request Body: Event object representing a busy schedule
 Response: ResponseEntity<Event> - Created event details with HTTP status
-2. Retrieve Events by User and Date
+<img width="661" alt="createBusySchedule" src="https://github.com/DipankarBhaduri/Event-Pilot/assets/110708060/483ab50b-0106-479e-9b0d-c65fb78999b1">
+
+3. Retrieve Events by User and Date
 Endpoint: /rest/api/getEvent
 Method: GET
 Request Body: UserDateInfo object containing user and date information
 Response: ResponseEntity<List<Event>> - List of events with HTTP status
-3. Retrieve Conflicting Events by User and Date
+4. Retrieve Conflicting Events by User and Date
 Endpoint: /rest/api/getConflictEvent
 Method: GET
 Request Body: UserDateInfo object containing user and date information
 Response: ResponseEntity<List<Event>> - List of conflicting events with HTTP status
-4. Retrieve Upcoming Empty Time Slots
+5. Retrieve Upcoming Empty Time Slots
 Endpoint: /rest/api/getUpcomingEmptySlot
 Method: GET
 Request Body: SchedulingRequest object containing scheduling request information
 Response: ResponseEntity<List<TimeSlot>> - List of upcoming empty time slots with HTTP status
-5. Create Event with Other Users
+6. Create Event with Other Users
 Endpoint: /rest/api/createEventWithOtherUsers
 Method: POST
 Request Body: Event object representing an event involving other users
