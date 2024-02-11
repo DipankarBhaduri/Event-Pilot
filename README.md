@@ -1,35 +1,36 @@
 Efficient Calendar Event Scheduling Prototype 📅
-This repository houses a prototype for a web application designed to streamline calendar event scheduling. Developed using Java, Spring Boot, and MongoDB, our objective is to provide users with essential functionalities for efficient schedule management. Below, you'll find instructions for setting up the application, an overview of its functionalities, and considerations for further development.
+Welcome to the repository housing our innovative web application prototype, dedicated to simplifying calendar event scheduling. Crafted using Java, Spring Boot, and MongoDB, our goal is to empower users with essential tools for seamless schedule management. Below, you'll discover instructions for deploying the application, an overview of its key features, and considerations for future enhancements.
 
 Functionalities 🚀
 User Busy Slots:
 
-Users can effortlessly create busy slots for themselves throughout the day.
+Effortlessly create busy slots throughout the day to streamline your schedule.
 Event Retrieval:
 
-Fetch events for individual users and other specified users seamlessly.
+Retrieve events for individual users and specified users with ease.
 Conflict Checking:
 
-Identify events where users have conflicts for a particular day, ensuring a conflict-free schedule.
+Identify conflicting events for users on a particular day, ensuring a hassle-free schedule.
 Optimal Slot Selection:
 
-Organizers can intelligently find the most favorable upcoming empty slot for a given set of users and a specific duration.
+Intelligently find the most favorable upcoming empty slot for a given set of users and a specific duration.
 Event Creation:
 
-Users can easily create events with other users for a defined start time and end time.
+Easily create events with other users, specifying start and end times effortlessly.
 Bonus Extensions 🌟
 Recurring Events:
-Organizers have the flexibility to create recurring events for a specific number of times, maintaining consistent start and end times with the same set of users.
+
+Organizers can create recurring events for a set number of times, maintaining consistent start and end times with the same set of users.
 Technology Stack 🛠️
 Java: The primary backend programming language, chosen for its versatility and reliability.
 Spring Boot: Selected for its simplicity and efficiency in developing robust applications.
 MongoDB: Employed as the NoSQL database to store and manage calendar events.
 How to Run the Service ⚙️
-Clone the repository: git clone [repository_url]
+
+Clone the repository: git clone [https://github.com/DipankarBhaduri/Event-Pilot.git]
 Navigate to the project directory: cd calendar-event-scheduler
 Build the project: ./mvnw clean install
 Run the application: ./mvnw spring-boot:run
-The application will initiate, and you can access the APIs to leverage the specified functionalities.
 
 Event Controller 📝
 1. Create Busy Schedule Event (Userscan create busy slots for themselves during the day)
